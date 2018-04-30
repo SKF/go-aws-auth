@@ -15,6 +15,8 @@ type Credentials struct {
 	SecretAccessKey string
 	SecurityToken   string `json:"Token"`
 	Expiration      time.Time
+	Region 			string
+	Service 		string
 }
 
 // Sign signs a request bound for AWS. It automatically chooses the best
@@ -48,6 +50,14 @@ func Sign4(request *http.Request, credentials ...Credentials) *http.Request {
 
 	prepareRequestV4(request)
 	meta := new(metadata)
+
+	if keys.Region != "" {
+		meta.region = keys.Region
+	}
+
+	if keys.Service != "" {
+		meta.service = keys.Service
+	}
 
 	// Task 1
 	hashedCanonReq := hashedCanonicalRequestV4(request, meta)
